@@ -30,12 +30,12 @@ final class TenantPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        return $panel
+        $panel = $panel
             ->id('tenant')
             ->path('tenant')
             ->login()
             ->authGuard('tenant')
-            ->brandName(fn() => app(TenantManager::class)->current()?->name ?? 'SIAKAD Tenant')
+            ->brandName(fn () => app(TenantManager::class)->current()?->name ?? 'SIAKAD Tenant')
             ->colors([
                 'primary' => Color::Indigo,
                 'gray' => Color::Slate,
@@ -82,23 +82,33 @@ final class TenantPanelProvider extends PanelProvider
                 TodayLecturesWidget::class,
                 AccountWidget::class,
             ])
-            ->tenantDomain('{tenant}.mysaasmp.test')
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
+                ResolveTenant::class,
+                InitializeTenant::class,
                 StartSession::class,
                 AuthenticateSession::class,
                 ShareErrorsFromSession::class,
                 PreventRequestForgery::class,
                 SubstituteBindings::class,
-                ResolveTenant::class,
-                InitializeTenant::class,
                 PreventTenantLeakage::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            ->persistentMiddleware([
+                ResolveTenant::class,
+                InitializeTenant::class,
+                PreventTenantLeakage::class,
+            ])
             ->authMiddleware([
                 Authenticate::class,
             ]);
+
+        if ($tenantDomain = config('tenancy.panel_domain')) {
+            $panel->tenantDomain($tenantDomain);
+        }
+
+        return $panel;
     }
 }

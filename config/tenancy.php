@@ -17,6 +17,8 @@ return [
 
     'tenant_connection' => env('TENANT_DB_CONNECTION', 'tenant'),
 
+    'panel_domain' => env('TENANT_PANEL_DOMAIN'),
+
     /*
     |--------------------------------------------------------------------------
     | Domain Resolution

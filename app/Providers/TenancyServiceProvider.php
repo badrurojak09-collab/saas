@@ -8,6 +8,7 @@ use App\Console\Commands\TenantCurrentCommand;
 use App\Console\Commands\TenantProvisionCommand;
 use App\Console\Commands\TenantProvisionRetryCommand;
 use App\Console\Commands\TenantProvisionStatusCommand;
+use App\Console\Commands\TenantSeedPermissionsCommand;
 use App\Console\Commands\TenantSwitchCommand;
 use App\Contracts\Tenancy\TenantResolver as LegacyTenantResolverContract;
 use App\Events\Landlord\TenantCreated;
@@ -27,12 +28,16 @@ use App\Tenancy\Contracts\TenantConnectionManager as TenantConnectionManagerCont
 use App\Tenancy\Contracts\TenantContext as TenantContextContract;
 use App\Tenancy\Contracts\TenantManager as TenantManagerContract;
 use App\Tenancy\Contracts\TenantResolver as TenantResolverContract;
+use App\Tenancy\Middleware\InitializeTenant;
+use App\Tenancy\Middleware\PreventTenantLeakage;
+use App\Tenancy\Middleware\ResolveTenant;
 use App\Tenancy\Provisioning\TenantProvisioningContext;
 use App\Tenancy\Provisioning\TenantProvisioningLock;
 use App\Tenancy\Services\TenantManagerService;
 use App\Tenancy\Services\TenantResolverService;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 
 class TenancyServiceProvider extends ServiceProvider
 {
@@ -82,6 +87,12 @@ class TenancyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Livewire::addPersistentMiddleware([
+            ResolveTenant::class,
+            InitializeTenant::class,
+            PreventTenantLeakage::class,
+        ]);
+
         // Register Event Listeners
         Event::listen(TenantCreated::class, DispatchTenantProvisioning::class);
 
@@ -93,6 +104,7 @@ class TenancyServiceProvider extends ServiceProvider
                 TenantProvisionCommand::class,
                 TenantProvisionRetryCommand::class,
                 TenantProvisionStatusCommand::class,
+                TenantSeedPermissionsCommand::class,
             ]);
         }
     }
