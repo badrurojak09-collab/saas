@@ -46,7 +46,13 @@ class TenantConnectionManager implements TenantConnectionManagerContract
             throw new TenantConnectionException('Tenant database name is empty.');
         }
 
-        $driver = $database->driver ?: (str_ends_with($database->database, '.sqlite') ? 'sqlite' : 'mysql');
+        $driver = strtolower($database->driver ?: (str_ends_with($database->database, '.sqlite') ? 'sqlite' : 'mysql'));
+
+        if ($driver === 'sqlite' && $database->database !== ':memory:' && ! str_ends_with(strtolower($database->database), '.sqlite')) {
+            throw new TenantConnectionException(
+                "Tenant database [{$database->database}] is configured as SQLite, but it is not a SQLite file path. Set driver to mysql for a MySQL database name."
+            );
+        }
 
         if ($driver === 'sqlite') {
             config([

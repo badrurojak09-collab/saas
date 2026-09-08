@@ -2,12 +2,10 @@
 
 namespace App\Models\Landlord;
 
-use App\Models\Concerns\HasUuidV7;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AddonFeature extends LandlordModel
 {
-    use HasUuidV7;
 
     protected $fillable = [
         'addon_id',

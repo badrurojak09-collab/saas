@@ -35,6 +35,16 @@ class TenantPermissionSeeder extends Seeder
                 // Organization
                 'organization.view',
                 'organization.manage',
+                'organization_units.view',
+                'organization_units.create',
+                'organization_units.update',
+                'organization_units.delete',
+                'organization_units.activate',
+                'organization_units.deactivate',
+                'organization_memberships.view',
+                'organization_memberships.create',
+                'organization_memberships.update',
+                'organization_memberships.delete',
 
                 // Academic Master
                 'academic.view',

@@ -35,7 +35,7 @@ final class TenantPanelProvider extends PanelProvider
             ->path('tenant')
             ->login()
             ->authGuard('tenant')
-            ->brandName(fn () => app(TenantManager::class)->current()?->name ?? 'SIAKAD Tenant')
+            ->brandName(fn() => app(TenantManager::class)->current()?->name ?? 'SIAKAD Tenant')
             ->colors([
                 'primary' => Color::Indigo,
                 'gray' => Color::Slate,
@@ -82,6 +82,7 @@ final class TenantPanelProvider extends PanelProvider
                 TodayLecturesWidget::class,
                 AccountWidget::class,
             ])
+            ->tenantDomain('{tenant}.mysaasmp.test')
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

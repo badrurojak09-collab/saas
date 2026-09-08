@@ -4,12 +4,13 @@ namespace App\Services\Tenant;
 
 use App\Exceptions\Authorization\TenantAccessDeniedException;
 use App\Models\Tenant\OrganizationMembership;
+use App\Models\Tenant\OrganizationUnit;
 use App\Models\Tenant\User;
 use Illuminate\Database\Eloquent\Collection;
 
 final class OrganizationAccessService
 {
-    public function canAccess(User $user, string $organizationType, string $organizationId): bool
+    public function canAccess(User $user, OrganizationUnit $organizationUnit): bool
     {
         if ($user->hasRole('tenant_admin')) {
             return true;
@@ -17,15 +18,14 @@ final class OrganizationAccessService
 
         return OrganizationMembership::query()
             ->where('user_id', $user->getKey())
-            ->where('organization_type', $organizationType)
-            ->where('organization_id', $organizationId)
+            ->where('organization_unit_id', $organizationUnit->getKey())
             ->get()
-            ->contains(fn (OrganizationMembership $membership): bool => $membership->isActive());
+            ->contains(fn(OrganizationMembership $membership): bool => $membership->isActive());
     }
 
-    public function authorize(User $user, string $organizationType, string $organizationId): void
+    public function authorize(User $user, OrganizationUnit $organizationUnit): void
     {
-        if (! $this->canAccess($user, $organizationType, $organizationId)) {
+        if (! $this->canAccess($user, $organizationUnit)) {
             throw new TenantAccessDeniedException('User does not have access to this organization scope.');
         }
     }
@@ -40,6 +40,7 @@ final class OrganizationAccessService
             ->where(function ($query): void {
                 $query->whereNull('ends_at')->orWhere('ends_at', '>', now());
             })
+            ->whereNull('deleted_at')
             ->get();
     }
 }

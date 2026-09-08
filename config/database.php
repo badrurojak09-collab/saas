@@ -60,10 +60,10 @@ return [
         ],
         'landlord' => [
             'driver' => env('LANDLORD_DB_DRIVER', 'mysql'),
-            'url' => env('DB_URL'),
+            // 'url' => env('DB_URL'),
             'host' => env('LANDLORD_DB_HOST', '127.0.0.1'),
             'port' => env('LANDLORD_DB_PORT', '3306'),
-            'database' => env('LANDLORD_DB_DATABASE', 'siakad_landlord'),
+            'database' => env('LANDLORD_DB_DATABASE', 'mysaasmp_landlord'),
             'username' => env('LANDLORD_DB_USERNAME', 'root'),
             'password' => env('LANDLORD_DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),
@@ -79,7 +79,7 @@ return [
         ],
         'tenant' => [
             'driver' => env('TENANT_DB_DRIVER', 'mysql'),
-            'url' => env('DB_URL'),
+            // 'url' => env('DB_URL'),
             'host' => env('TENANT_DB_HOST', '127.0.0.1'),
             'port' => env('TENANT_DB_PORT', '3306'),
             'database' => null,  // sengaja null — akan di-set dinamis
@@ -174,7 +174,7 @@ return [
         'client' => env('REDIS_CLIENT', 'phpredis'),
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-database-'),
+            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')) . '-database-'),
             'persistent' => env('REDIS_PERSISTENT', false),
         ],
         'default' => [

@@ -1,24 +1,25 @@
 <?php
 
-// app/Models/Landlord/PackageFeature.php
-
 namespace App\Models\Landlord;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PackageFeature extends LandlordModel
 {
+    protected $table = 'package_features';
+
     protected $fillable = [
         'package_id',
         'feature_code',
-        'feature_name',
-        'limits',
+        'enabled',
+        'config',
     ];
 
     protected function casts(): array
     {
         return [
-            'limits' => 'array',  // Menyimpan JSON limit fitur
+            'enabled' => 'boolean',
+            'config' => 'array',
         ];
     }
 

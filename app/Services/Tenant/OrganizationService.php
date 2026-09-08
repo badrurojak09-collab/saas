@@ -8,6 +8,10 @@ use App\Actions\Tenant\CreateStudyProgramAction;
 use App\Actions\Tenant\UpdateDepartmentAction;
 use App\Actions\Tenant\UpdateFacultyAction;
 use App\Actions\Tenant\UpdateStudyProgramAction;
+use App\Actions\Tenant\Organization\CreateOrganizationUnitAction;
+use App\Actions\Tenant\Organization\UpdateOrganizationUnitAction;
+use App\DTOs\Tenant\Organization\CreateOrganizationUnitData;
+use App\Models\Tenant\OrganizationUnit;
 use App\DTOs\Tenant\CreateDepartmentData;
 use App\DTOs\Tenant\CreateFacultyData;
 use App\DTOs\Tenant\CreateStudyProgramData;
@@ -25,6 +29,8 @@ class OrganizationService
         protected UpdateDepartmentAction $updateDepartmentAction,
         protected CreateStudyProgramAction $createStudyProgramAction,
         protected UpdateStudyProgramAction $updateStudyProgramAction,
+        protected CreateOrganizationUnitAction $createOrganizationUnitAction,
+        protected UpdateOrganizationUnitAction $updateOrganizationUnitAction,
     ) {}
 
     public function allFaculties(): Collection
@@ -60,5 +66,25 @@ class OrganizationService
     public function updateStudyProgram(StudyProgram $studyProgram, CreateStudyProgramData $data): StudyProgram
     {
         return $this->updateStudyProgramAction->execute($studyProgram, $data);
+    }
+
+    public function createUnit(CreateOrganizationUnitData $data): OrganizationUnit
+    {
+        return $this->createOrganizationUnitAction->execute($data);
+    }
+
+    public function updateUnit(OrganizationUnit $unit, CreateOrganizationUnitData $data): OrganizationUnit
+    {
+        return $this->updateOrganizationUnitAction->execute($unit, $data);
+    }
+
+    public function tree(string $perguruanTinggiId): Collection
+    {
+        return OrganizationUnit::query()
+            ->where('perguruan_tinggi_id', $perguruanTinggiId)
+            ->whereNull('parent_id')
+            ->with('children.children')
+            ->orderBy('sort_order')
+            ->get();
     }
 }

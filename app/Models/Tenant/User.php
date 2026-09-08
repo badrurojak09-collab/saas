@@ -80,4 +80,9 @@ class User extends TenantModel implements AuthenticatableContract, AuthorizableC
     {
         return $this->hasMany(UserInvitation::class, 'invited_by');
     }
+
+    public function organizationMemberships(): HasMany
+    {
+        return $this->hasMany(OrganizationMembership::class, 'user_id');
+    }
 }

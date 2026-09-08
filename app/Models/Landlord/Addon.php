@@ -4,13 +4,11 @@ namespace App\Models\Landlord;
 
 use App\Enums\Landlord\AddonStatus;
 use App\Enums\Landlord\BillingCycle;
-use App\Models\Concerns\HasUuidV7;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Addon extends LandlordModel
 {
-    use HasUuidV7;
     use SoftDeletes;
 
     protected $fillable = [
